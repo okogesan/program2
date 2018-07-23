@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+      body {
+        background: #fff;
+        text-align: center;
+      }
+      #timerText {
+        color: gray;
+        font-size: 128px;
+        margin: 40px auto;
+      }
+      button {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: blue;
+        color: white;
+      }
+      button:focus {
+        outline: 0;
+      }
+    </style>
+</head>
+<body>
+  <h1>Stop Watch</h1>
+  <div id="timerText">00:00.000</div>
+  <button id="start_timer" onclick="start_timer()">Start</button>
+  <button id="stop" onclick="stop_timer()">Stop</button>
+  <button id="reset" onclick="clear_timer()">Reset</button>
+  <script>
+    var setinterval_id,
+        timer_text = document.getElementById('timerText'),
+        start_time,
+        elapsed_time = 0,
+        stoped_time = 0,
+        timer_running = false;
+    // start_timer()関数はstartが押された時に実行する関数
+    function start_timer() {
+      if (timer_running) {
+        return;
+      }
+      start_time = Date.now();
+      timer_running = true;
+      count_up();
+    }
+    // stop_timer()関数はstopが押された時に実行する関数
+    function stop_timer() {
+      if (timer_running) {
+        clearInterval(setinterval_id);
+        stoped_time += Date.now() - start_time;
+        timer_running = false;
+      }
+    }
+    // clear_timer()関数はclearが押された時の関数
+    function clear_timer() {
+      if (timer_running) {
+        return;
+      }
+      elapsed_time = 0;
+      stoped_time = 0;
+      update_text();
+    }
+    // update_text()関数は実際にタイマーの数字を表示させる関数
+    function update_text() {
+      let m = Math.floor(elapsed_time / 60000);
+      let s = Math.floor((elapsed_time % 60000) / 1000);
+      let ms = elapsed_time % 1000;
+      m = ('0' + m).slice(-2);
+      s = ('0' + s).slice(-2);
+      ms = ('00' + ms).slice(-3);
+      timer_text.innerText = m + ":" + s + "." + ms;
+    }
+    // count_up()関数はタイマーの時間を計算する関数
+    function count_up() {
+      setinterval_id = setInterval(function() {
+        elapsed_time = Date.now() - start_time + stoped_time;
+        update_text();
+      }, 10)
+    }
+  </script>
+</body>
